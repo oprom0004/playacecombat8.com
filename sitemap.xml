@@ -1,49 +1,50 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://acecombat8game.com/</loc>
+    <loc>https://playacecombat8.com/</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://acecombat8game.com/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://acecombat8game.com/ja/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playacecombat8.com/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playacecombat8.com/ja/"/>
   </url>
   <url>
-    <loc>https://acecombat8game.com/play-online/</loc>
+    <loc>https://playacecombat8.com/play-online/</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://acecombat8game.com/play-online/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://acecombat8game.com/ja/play-online/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playacecombat8.com/play-online/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playacecombat8.com/ja/play-online/"/>
   </url>
   <url>
-    <loc>https://acecombat8game.com/hardware/</loc>
+    <loc>https://playacecombat8.com/hardware/</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://acecombat8game.com/hardware/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playacecombat8.com/hardware/"/>
   </url>
   <url>
-    <loc>https://acecombat8game.com/system-requirements/</loc>
+    <loc>https://playacecombat8.com/system-requirements/</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://acecombat8game.com/system-requirements/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playacecombat8.com/system-requirements/"/>
   </url>
   <url>
-    <loc>https://acecombat8game.com/ja/</loc>
+    <loc>https://playacecombat8.com/ja/</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://acecombat8game.com/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://acecombat8game.com/ja/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playacecombat8.com/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playacecombat8.com/ja/"/>
   </url>
   <url>
-    <loc>https://acecombat8game.com/ja/play-online/</loc>
+    <loc>https://playacecombat8.com/ja/play-online/</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://acecombat8game.com/play-online/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://acecombat8game.com/ja/play-online/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playacecombat8.com/play-online/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playacecombat8.com/ja/play-online/"/>
   </url>
 </urlset>
+

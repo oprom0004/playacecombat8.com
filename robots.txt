@@ -1,4 +1,5 @@
-User-agent: *
+﻿User-agent: *
 Allow: /
 
-Sitemap: https://acecombat8game.com/sitemap.xml
+Sitemap: https://playacecombat8.com/sitemap.xml
+

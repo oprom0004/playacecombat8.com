@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ACE COMBAT 8 - 3D Tactical Jet Dogfight Arcade Engine
  * Pure Vanilla JavaScript & Web Audio API (Zero External Dependencies)
  */
@@ -568,3 +568,4 @@
 
   requestAnimationFrame(loop);
 })();
+

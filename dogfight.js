@@ -351,10 +351,10 @@
       keys[e.code] = false;
     });
 
-    // Mobile Virtual Joystick & Touch
+    // Mobile Virtual Joystick & Touch Controls (Support both ID conventions)
     const virtualStick = { x: 0, y: 0, active: false };
-    const leftZone = document.getElementById('touchLeftZone');
-    const stickNub = document.getElementById('stickNub');
+    const leftZone = document.getElementById('touchStick') || document.getElementById('touchLeftZone');
+    const stickNub = document.getElementById('stickThumb') || document.getElementById('stickNub');
 
     if (leftZone && stickNub) {
       let touchId = null;
@@ -364,8 +364,9 @@
         initAudio();
         const t = e.changedTouches[0];
         touchId = t.identifier;
-        startX = t.clientX;
-        startY = t.clientY;
+        const rect = leftZone.getBoundingClientRect();
+        startX = rect.left + rect.width / 2;
+        startY = rect.top + rect.height / 2;
         virtualStick.active = true;
       }, { passive: false });
 
@@ -376,14 +377,14 @@
           if (t.identifier === touchId) {
             const dx = t.clientX - startX;
             const dy = t.clientY - startY;
-            const dist = Math.min(Math.hypot(dx, dy), 50);
+            const dist = Math.min(Math.hypot(dx, dy), 45);
             const angle = Math.atan2(dy, dx);
             const nx = Math.cos(angle) * dist;
             const ny = Math.sin(angle) * dist;
 
             stickNub.style.transform = `translate(${nx}px, ${ny}px)`;
-            virtualStick.x = nx / 50;
-            virtualStick.y = ny / 50;
+            virtualStick.x = nx / 45;
+            virtualStick.y = ny / 45;
           }
         }
       }, { passive: false });
@@ -403,30 +404,60 @@
       leftZone.addEventListener('touchcancel', resetStick);
     }
 
-    // Action Buttons
+    // Touch Action Buttons
     let gunFiring = false;
-    const btnGun = document.getElementById('btnGun');
-    const btnMissile = document.getElementById('btnMissile');
-    const btnBoost = document.getElementById('btnBoost');
+    const btnGun = document.getElementById('btnFireGun') || document.getElementById('btnGun');
+    const btnMissile = document.getElementById('btnFireMissile') || document.getElementById('btnMissile');
+    const btnBoost = document.getElementById('btnBoost') || document.getElementById('btnAfterburner');
 
     if (btnGun) {
-      btnGun.addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); gunFiring = true; });
+      btnGun.addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); gunFiring = true; }, { passive: false });
       btnGun.addEventListener('touchend', () => { gunFiring = false; });
       btnGun.addEventListener('mousedown', () => { initAudio(); gunFiring = true; });
       btnGun.addEventListener('mouseup', () => { gunFiring = false; });
     }
 
     if (btnMissile) {
+      btnMissile.addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); fireMissile(); }, { passive: false });
       btnMissile.addEventListener('click', (e) => { e.preventDefault(); initAudio(); fireMissile(); });
     }
 
     let isBoosting = false;
     if (btnBoost) {
-      btnBoost.addEventListener('touchstart', (e) => { e.preventDefault(); isBoosting = true; });
+      btnBoost.addEventListener('touchstart', (e) => { e.preventDefault(); isBoosting = true; }, { passive: false });
       btnBoost.addEventListener('touchend', () => { isBoosting = false; });
       btnBoost.addEventListener('mousedown', () => { isBoosting = true; });
       btnBoost.addEventListener('mouseup', () => { isBoosting = false; });
     }
+
+    // Mouse Controls on Canvas
+    let mouseControl = { x: 0, y: 0, active: false };
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const cx = (e.clientX - rect.left) / rect.width * 2 - 1;
+      const cy = -((e.clientY - rect.top) / rect.height * 2 - 1);
+      mouseControl.x = cx;
+      mouseControl.y = -cy; // Invert for flight pitch
+      mouseControl.active = true;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      mouseControl.active = false;
+      mouseControl.x = 0;
+      mouseControl.y = 0;
+    });
+
+    canvas.addEventListener('mousedown', (e) => {
+      initAudio();
+      if (e.button === 0) gunFiring = true;
+      if (e.button === 2) { e.preventDefault(); fireMissile(); }
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (e.button === 0) gunFiring = false;
+    });
+
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
     // Weapons
     function fireBullet() {
@@ -529,6 +560,13 @@
       if (keys['d'] || keys['ArrowRight']) { targetRoll = 0.06; targetYaw = -0.02; }
       if (keys['q']) targetYaw = 0.03;
       if (keys['e']) targetYaw = -0.03;
+
+      // Mouse Steering Override
+      if (mouseControl.active) {
+        targetPitch = mouseControl.y * 0.045;
+        targetRoll = mouseControl.x * 0.065;
+        targetYaw = -mouseControl.x * 0.02;
+      }
 
       // Virtual Stick Override
       if (virtualStick.active) {

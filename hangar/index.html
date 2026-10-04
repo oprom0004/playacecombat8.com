@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ace Combat 8 3D Tactical Hangar | 360° Aircraft Viewer & Livery Customizer</title>
+  <meta name="description" content="Step inside the 3D Ace Combat 8 Tactical Hangar. Inspect high-detail 3D models of the F-22A, Su-57, and FA-36, customize camo liveries, and mount heavy SPW weapon hardpoints.">
+  <meta name="keywords" content="ace combat 8 hangar, 3d fighter jet customizer, ace combat 8 3d models, f-22 raptor 3d viewer, su-57 3d livery, ac8 aircraft customizer">
+
+  <link rel="canonical" href="https://playacecombat8.com/hangar/">
+  <link rel="alternate" hreflang="en" href="https://playacecombat8.com/hangar/">
+
+  <meta property="og:title" content="Ace Combat 8: 3D Tactical Hangar & Customizer">
+  <meta property="og:description" content="Inspect stealth fighters in 360° 3D, customize liveries, and configure weapon loadouts in the interactive hangar.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://playacecombat8.com/hangar/">
+  <meta property="og:image" content="https://playacecombat8.com/images/hero.jpg">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✈️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+
+  <style>
+    .hangar-viewport-container {
+      position: relative;
+      width: 100%;
+      height: clamp(520px, 75vh, 780px);
+      background: radial-gradient(circle at 50% 30%, #0d1a2d 0%, #040811 100%);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--hud-cyan);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(0, 242, 254, 0.15);
+      margin-bottom: 1.5rem;
+    }
+
+    #hangarCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+      cursor: grab;
+    }
+    #hangarCanvas:active {
+      cursor: grabbing;
+    }
+
+    .hangar-ui-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.25rem;
+      font-family: var(--font-mono);
+    }
+
+    .hangar-top-telemetry {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .hangar-badge {
+      background: rgba(4, 8, 17, 0.85);
+      border: 1px solid var(--hud-cyan);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+    }
+
+    .hangar-controls-panel {
+      pointer-events: auto;
+      background: rgba(6, 11, 22, 0.9);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      backdrop-filter: blur(12px);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    }
+
+    .control-group-title {
+      font-size: 0.75rem;
+      color: var(--hud-cyan);
+      letter-spacing: 1px;
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .selector-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .pill-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-dim);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      transition: all 0.2s;
+    }
+
+    .pill-btn:hover, .pill-btn.active {
+      background: var(--hud-cyan);
+      color: #000;
+      border-color: var(--hud-cyan);
+      font-weight: 800;
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+    }
+
+    .hangar-info-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .spec-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.2rem;
+    }
+
+    .spec-box h4 {
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      margin-bottom: 0.3rem;
+    }
+
+    .spec-box .val {
+      font-size: 1.4rem;
+      color: #fff;
+      font-weight: 800;
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="header-content">
+      <a href="/" class="brand-logo">
+        <span class="brand-icon">⚡</span>
+        <div>
+          <span class="brand-title">ACE COMBAT 8</span>
+          <span class="brand-sub">TACTICAL AVIATION & GEAR HUB</span>
+        </div>
+      </a>
+
+      <nav class="top-nav" id="siteNav">
+        <a href="/">Home</a>
+        <a href="/hangar/" class="active">🏢 3D Hangar</a>
+        <a href="/play-online/">🕹️ 3D Dogfight</a>
+        <a href="/psm-guide/">🎯 PSM Guide</a>
+        <a href="/steam-deck/">🎮 Steam Deck</a>
+        <a href="/hardware/">🕹️ HOTAS Gear</a>
+        <a href="/editions/">📦 Editions</a>
+        <a href="https://acecombat8.org/" target="_blank" rel="noopener" style="color: var(--hud-cyan);">📚 Wiki ↗</a>
+      </nav>
+
+      <div class="header-right">
+        <div class="lang-switch">
+          <a href="/hangar/" class="lang-btn active">EN</a>
+          <a href="/ja/" class="lang-btn">日本語</a>
+        </div>
+        <button class="mobile-menu-toggle" id="menuToggle" aria-label="Toggle Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1rem;">
+      <a href="/" style="color: var(--text-muted); text-decoration: none;">Home</a> / <span style="color: var(--hud-cyan);">3D Tactical Hangar & Customizer</span>
+    </div>
+
+    <!-- 3D Hangar Viewport -->
+    <div class="hangar-viewport-container">
+      <canvas id="hangarCanvas"></canvas>
+
+      <!-- HUD Telemetry on Top of 3D Canvas -->
+      <div class="hangar-ui-overlay">
+        <div class="hangar-top-telemetry">
+          <div class="hangar-badge">
+            <span style="color: var(--hud-cyan); font-size: 0.7rem; letter-spacing: 1px;">BAY 04 // STRANGEREAL AIRBASE</span>
+            <h2 id="hangarPlaneName" style="color: #fff; font-size: 1.3rem; margin: 0.2rem 0;">F-22A Raptor</h2>
+            <span id="hangarRole" style="color: var(--hud-green); font-size: 0.8rem;">5th-Gen Stealth Air Dominance</span>
+          </div>
+
+          <div class="hangar-badge" style="text-align: right;">
+            <span style="color: var(--text-muted); font-size: 0.7rem;">ORBIT ROTATION</span>
+            <div style="color: #fff; font-size: 0.85rem; margin-top: 0.2rem;">Drag to Orbit • Scroll to Zoom</div>
+            <div style="color: var(--hud-cyan); font-size: 0.75rem; margin-top: 0.2rem;">● REAL-TIME WEBGL SHADERS</div>
+          </div>
+        </div>
+
+        <!-- Bottom Customizer Controls -->
+        <div class="hangar-controls-panel">
+          <!-- Aircraft Selection -->
+          <div>
+            <div class="control-group-title">1. Select Aircraft</div>
+            <div class="selector-pills">
+              <button class="pill-btn active" onclick="switchPlane('f22a', this)">F-22A</button>
+              <button class="pill-btn" onclick="switchPlane('su57', this)">Su-57</button>
+              <button class="pill-btn" onclick="switchPlane('fa36', this)">FA-36 (6th Gen)</button>
+              <button class="pill-btn" onclick="switchPlane('x02s', this)">X-02S Wyvern</button>
+              <button class="pill-btn" onclick="switchPlane('adf11f', this)">ADF-11F Raven</button>
+            </div>
+          </div>
+
+          <!-- Livery Selection -->
+          <div>
+            <div class="control-group-title">2. Paint Scheme / Livery</div>
+            <div class="selector-pills">
+              <button class="pill-btn active" onclick="switchLivery('stealth', this)">Gunmetal Stealth</button>
+              <button class="pill-btn" onclick="switchLivery('razgriz', this)">Razgriz Black</button>
+              <button class="pill-btn" onclick="switchLivery('arctic', this)">Arctic Splinter</button>
+              <button class="pill-btn" onclick="switchLivery('desert', this)">Desert Camo</button>
+            </div>
+          </div>
+
+          <!-- Special Weapon Loadout -->
+          <div>
+            <div class="control-group-title">3. Hardpoint Armament (SPW)</div>
+            <div class="selector-pills">
+              <button class="pill-btn active" onclick="switchSPW('qaam', this)">QAAM Missiles</button>
+              <button class="pill-btn" onclick="switchSPW('eml', this)">EML Railgun</button>
+              <button class="pill-btn" onclick="switchSPW('plsl', this)">Pulse Laser</button>
+              <button class="pill-btn" onclick="switchSPW('tls', this)">Tactical Laser</button>
+            </div>
+          </div>
+
+          <!-- Action CTA -->
+          <div style="display: flex; align-items: flex-end;">
+            <a href="/play-online/" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.6rem 1rem;">
+              <span>🚀</span> Test Fly This Jet →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real-Time Telemetry Stats Breakdown -->
+    <div class="hangar-info-stats">
+      <div class="spec-box">
+        <h4>TOP SPEED (AFTERBURNER)</h4>
+        <div class="val" id="specSpeed" style="color: var(--hud-cyan);">Mach 2.50</div>
+        <p style="color: var(--text-dim); font-size: 0.78rem; margin-top: 0.4rem;">Supercruise enabled without afterburner penalty.</p>
+      </div>
+
+      <div class="spec-box">
+        <h4>RADAR CROSS-SECTION (RCS)</h4>
+        <div class="val" id="specRCS" style="color: var(--hud-green);">0.0001 m²</div>
+        <p style="color: var(--text-dim); font-size: 0.78rem; margin-top: 0.4rem;">Very Low Observable (VLO) RAM coating.</p>
+      </div>
+
+      <div class="spec-box">
+        <h4>THRUST-TO-WEIGHT RATIO</h4>
+        <div class="val" id="specTWR" style="color: var(--hud-amber);">1.28 : 1</div>
+        <p style="color: var(--text-dim); font-size: 0.78rem; margin-top: 0.4rem;">Twin 2D Pitch-axis thrust vectoring nozzles.</p>
+      </div>
+
+      <div class="spec-box">
+        <h4>ARMAMENT CAPACITY</h4>
+        <div class="val" id="specHardpoints">6 Internal + 4 Wing</div>
+        <p style="color: var(--text-dim); font-size: 0.78rem; margin-top: 0.4rem;">Integrated rotary launcher + stealth bay doors.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h4 style="color: #fff; margin-bottom: 0.8rem; font-size: 0.95rem;">PLAY ACE COMBAT 8</h4>
+        <p style="color: var(--text-dim); font-size: 0.82rem; line-height: 1.5;">
+          The independent community tactical portal for Ace Combat 8: Wings of Theve. 3D tactical hangar, aircraft viewer, and flight combat guides.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4 style="color: #fff; margin-bottom: 0.8rem; font-size: 0.95rem;">TACTICAL SECTIONS</h4>
+        <div class="footer-links">
+          <a href="/hangar/">3D Tactical Hangar</a>
+          <a href="/play-online/">3D Dogfight Arcade</a>
+          <a href="/psm-guide/">PSM Cobra Guide</a>
+          <a href="/hardware/">HOTAS Flight Sticks</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4 style="color: #fff; margin-bottom: 0.8rem; font-size: 0.95rem;">KNOWLEDGE WIKI</h4>
+        <div class="footer-links">
+          <a href="https://acecombat8.org/aircraft/" target="_blank" rel="noopener">Full Aircraft Tree</a>
+          <a href="https://acecombat8.org/aircraft/tier-list/" target="_blank" rel="noopener">Tier List Rankings</a>
+          <a href="https://acecombat8.org/campaign-overview/" target="_blank" rel="noopener">Campaign Length</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 PlayAceCombat8.com. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Three.js + OrbitControls + Hangar Customizer Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="/hangar.js"></script>
+</body>
+</html>

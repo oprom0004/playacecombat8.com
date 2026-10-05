@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -110,10 +110,10 @@
     <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.65rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
       <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
         <button id="fullscreenBtn" class="btn-secondary" type="button" style="background: rgba(0,242,254,0.15); border-color: var(--hud-cyan); color: #fff;">
-          <span>⛶</span> 全画面 (Fullscreen)
+          全画面 (Fullscreen)
         </button>
         <button id="restartBtn" class="btn-secondary" type="button">
-          <span>🔄</span> リスタート
+          リスタート
         </button>
       </div>
 
@@ -143,7 +143,7 @@
         <button id="copyShareBtn" class="btn-primary" style="padding: 0.6rem 1rem; white-space: nowrap;">コピー</button>
       </div>
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
-        <a id="shareX" href="#" target="_blank" rel="noopener" class="btn-secondary" style="justify-content: center; font-size: 0.8rem;">𝕏 Twitter</a>
+        <a id="shareX" href="#" target="_blank" rel="noopener" class="btn-secondary" style="justify-content: center; font-size: 0.8rem;">X (Twitter)</a>
         <a id="shareLine" href="#" target="_blank" rel="noopener" class="btn-secondary" style="justify-content: center; font-size: 0.8rem;">LINE</a>
         <a id="shareWA" href="#" target="_blank" rel="noopener" class="btn-secondary" style="justify-content: center; font-size: 0.8rem;">WhatsApp</a>
       </div>
@@ -227,7 +227,7 @@
     if (copyShareBtn && shareLinkInput) {
       copyShareBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(shareLinkInput.value).then(() => {
-          copyShareBtn.textContent = 'コピー完了! 🎉';
+          copyShareBtn.textContent = 'コピー完了!';
           setTimeout(() => { copyShareBtn.textContent = 'コピー'; }, 2000);
         });
       });
